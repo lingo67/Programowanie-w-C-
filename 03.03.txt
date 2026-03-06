@@ -1,0 +1,172 @@
+#include <iostream>
+using namespace std;
+
+void showBoard(char tab[3][3])
+{
+    cout<<"\n";
+    for (int i=0; i<3; i++)
+    {
+        for (int j=0; j<3; j++)
+        {
+            cout<<"| "<<tab[i][j]<<" |";
+        }
+        if (i<2)
+        {
+            cout<<"\n---------------\n";
+        }
+    }
+    cout<<"\n\n";
+}
+
+void clearBoard(char tab[3][3])
+{
+    for (int i=0; i<3; i++)
+    {
+        for (int j=0; j<3; j++)
+        {
+            tab[i][j]=' ';
+        }
+    }
+}
+
+char isFinished(char tab[3][3])
+{
+    for (int i=0; i<3; i++)
+    {
+        if (tab[i][0]=='X' and tab[i][0]==tab[i][1] and tab[i][1]==tab[i][2])
+        {
+            return 'X';
+        }
+        if (tab[0][i]=='X' and tab[0][i]==tab[1][i] and tab[1][i]==tab[2][i])
+        {
+            return 'X';
+        }
+    }
+    if (tab[0][0]=='X' and tab[0][0]==tab[1][1] and tab[1][1]==tab[2][2])
+    {
+        return 'X';
+    }
+    if (tab[0][2]=='X' and tab[0][2]==tab[1][1] and tab[1][1]==tab[2][0])
+    {
+        return 'X';
+    }
+    
+    for (int i=0; i<3; i++)
+    {
+        if (tab[i][0]=='O' and tab[i][0]==tab[i][1] and tab[i][1]==tab[i][2])
+        {
+            return 'O';
+        }
+        if (tab[0][i]=='O' and tab[0][i]==tab[1][i] and tab[1][i]==tab[2][i])
+        {
+            return 'O';
+        }
+    }
+    if (tab[0][0]=='O' and tab[0][0]==tab[1][1] and tab[1][1]==tab[2][2])
+    {
+        return 'O';
+    }
+    if (tab[0][2]=='O' and tab[0][2]==tab[1][1] and tab[1][1]==tab[2][0])
+    {
+        return 'O';
+    }
+    return 'N';
+}
+
+char znak=' ';
+bool setPoint(char tab[3][3],char znak,unsigned int pierwsza, unsigned int druga)
+{
+    if (pierwsza>=1 and pierwsza<=3)
+    {
+        pierwsza-=1;
+    }
+    else
+    {
+        return false;
+        cout<<"Zła współrzędna!\n";
+    }
+
+    if (druga>=1 and druga<=3)
+    {
+        druga-=1;
+    }
+    else
+    {
+        return false;
+        cout<<"Zła współrzędna!\n";
+    }
+
+    if (tab[pierwsza][druga]==' ')
+    {
+        tab[pierwsza][druga]=znak;
+        return true;
+    }
+    else
+    {
+        return false;
+        cout<<"Złe współrzędne!\n";
+    }
+}
+
+
+int main()
+{
+    do
+    {
+            char tab[3][3] ={
+            {'1','2','3'},
+            {'4','5','6'},
+            {'7','8','9'}
+        };
+        clearBoard(tab);
+
+        int tura=0;
+        unsigned int pierwsza=0;
+        unsigned int druga=0;
+
+        while (isFinished(tab)=='N')
+        {
+            if (tura%2==0)
+            {
+            znak='X';
+            cout<<"---Tura X---\n";
+            do
+            {
+                showBoard(tab);
+                cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
+                cout<<"Podaj druga wspolrzedna: ";cin>>druga;
+            } while (!setPoint(tab,znak,pierwsza,druga));
+            
+            
+            
+
+            }
+            else
+            {
+            znak='O';
+            cout<<"---Tura O---\n";
+            do
+            {
+                showBoard(tab);
+                cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
+                cout<<"Podaj druga wspolrzedna: ";cin>>druga;
+            } while (!setPoint(tab,znak,pierwsza,druga));
+            }
+
+            tura+=1;
+            if (tura==9)
+            {
+                cout<<"REMIS!\n";
+            }
+            if (isFinished(tab)=='X' and tura!=9)
+            {
+                cout<<"Wygrana X!\n\n\n";
+            }
+            if (isFinished(tab)=='O' and tura!=9)
+            {
+                cout<<"Wygrana O!\n\n\n";
+            }
+        }
+    }
+    while (true);
+}
