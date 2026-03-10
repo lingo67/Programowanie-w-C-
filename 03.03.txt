@@ -3,7 +3,6 @@ using namespace std;
 
 void showBoard(char tab[3][3])
 {
-    cout<<"\n";
     for (int i=0; i<3; i++)
     {
         for (int j=0; j<3; j++)
@@ -126,15 +125,15 @@ int main()
             if (tura%2==0)
             {
                 znak='X';
-                cout<<"---Tura X---\n";
                 do
                 {
+                    cout<<"\n=== Tura  X ===\n";
                     showBoard(tab);
                     cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
                     cout<<"Podaj druga wspolrzedna: ";cin>>druga;
                     if (!setPoint(tab,znak,pierwsza,druga))
                     {
-                        cout<<"Złe współrzędne!\n";
+                        cout<<"-Złe współrzędne!\n\n";
                     }
                     else
                     {
@@ -146,15 +145,15 @@ int main()
             else
             {
                 znak='O';
-                cout<<"---Tura O---\n";
                 do
                 {
+                    cout<<"\n=== Tura  O ===\n";
                     showBoard(tab);
                     cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
                     cout<<"Podaj druga wspolrzedna: ";cin>>druga;
                     if (!setPoint(tab,znak,pierwsza,druga))
                     {
-                        cout<<"Złe współrzędne!\n";
+                        cout<<"-Złe współrzędne!\n\n";
                     }
                     else
                     {
