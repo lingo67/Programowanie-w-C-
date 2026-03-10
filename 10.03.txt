@@ -1,0 +1,232 @@
+#include <iostream>
+using namespace std;
+
+void showBoard(char **tab, size_t n)
+{
+    for (int i=0; i<n; i++)
+    {
+        for (int j=0; j<n; j++)
+        {
+            cout<<"| "<<tab[i][j]<<" |";
+        }
+        if (i<n-1)
+        {
+            cout<<endl<<"-----------------------------------"<<endl;
+        }
+    }
+    cout<<endl<<endl;
+}
+
+void clearBoard(char **tab, size_t n)
+{
+    for (int i=0; i<n; i++)
+    {
+        for (int j=0; j<n; j++)
+        {
+            tab[i][j]=' ';
+        }
+    }
+}
+
+char isFinished(char **tab, size_t n)
+{
+    int licznik=0;
+    for (int i=0; i<n; i++) // poziom X
+    {
+        for (int j=0; j<n; j++)
+        {
+            if (tab[i][j]=='X')
+            {
+                licznik+=1;
+            }
+        }
+        if (licznik==n)
+        {
+            return 'X';
+        }
+        licznik=0;
+    }
+    for (int i=0; i<n; i++) // pion X
+    {
+        for (int j=0; j<n; j++)
+        {
+            if (tab[j][i]=='X')
+            {
+                licznik+=1;
+            }
+        }
+        if (licznik==n)
+        {
+            return 'X';
+        }
+        licznik=0;
+    }
+    for (int i=0; i<n-1; i++) //skos X
+    {
+        if (tab[i][i]==tab[i+1][i+1] and tab[i][i]=='X')
+        {
+            licznik+=1;
+        }
+        if (licznik==n)
+        {
+            return 'X';
+        }
+        licznik=0;
+    }
+
+    for (int i=0; i<n; i++) // poziom O
+    {
+        for (int j=0; j<n; j++)
+        {
+            if (tab[i][j]=='O')
+            {
+                licznik+=1;
+            }
+        }
+        if (licznik==n)
+        {
+            return 'O';
+        }
+        licznik=0;
+    }
+    for (int i=0; i<n; i++) // pion O
+    {
+        for (int j=0; j<n; j++)
+        {
+            if (tab[j][i]=='O')
+            {
+                licznik+=1;
+            }
+        }
+        if (licznik==n)
+        {
+            return 'O';
+        }
+    licznik=0;
+    }
+    for (int i=0; i<n-1; i++) // skos O
+    {
+        if (tab[i][i]==tab[i+1][i+1] and tab[i][i]=='O')
+        {
+            licznik+=1;
+        }
+        if (licznik==n)
+        {
+            return 'O';
+        }
+    licznik=0;
+    }
+    return 'N';
+}
+
+char znak=' ';
+bool setPoint(char **tab, size_t n, char znak, unsigned int pierwsza, unsigned int druga)
+{
+    if (pierwsza>=1 and pierwsza<=n)
+    {
+        pierwsza-=1;
+    }
+    else
+    {
+        return false;
+    }
+
+    if (druga>=1 and druga<=n)
+    {
+        druga-=1;
+    }
+    else
+    {
+        return false;
+    }
+
+    if (tab[pierwsza][druga]==' ')
+    {
+        tab[pierwsza][druga]=znak;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+int main()
+{
+    do
+    {
+        int tura=0;
+        unsigned int pierwsza=0;
+        unsigned int druga=0;
+
+        int n=0; // wielkosc tablicy
+        cout<<"Podaj wielkość tabeli: ";cin>>n;
+
+        char **tab = new char*[n];
+        for (size_t i=0; i<n; i++) {
+            tab[i]=new char[n];
+        }
+        clearBoard(tab, n);
+
+        while (isFinished(tab, n)=='N' and tura<n*n)
+        {
+            if (tura%2==0)
+            {
+                znak='X';
+                do
+                {
+                    cout<<"\n=== Tura  X ===\n";
+                    showBoard(tab, n);
+                    cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
+                    cout<<"Podaj druga wspolrzedna: ";cin>>druga;
+                    if (!setPoint(tab, n, znak,pierwsza,druga))
+                    {
+                        cout<<"-Złe współrzędne!\n";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                } while (true);
+                
+            }
+            else
+            {
+                znak='O';
+                do
+                {
+                    cout<<"\n=== Tura  O ===\n";
+                    showBoard(tab, n);
+                    cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
+                    cout<<"Podaj druga wspolrzedna: ";cin>>druga;
+                    if (!setPoint(tab, n, znak,pierwsza,druga))
+                    {
+                        cout<<"-Złe współrzędne!\n";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                } while (true);
+            }
+            tura+=1;
+            if (tura==n*n)
+            {
+                showBoard(tab, n);
+                cout<<"REMIS!\n\n\n";
+            }
+        }
+        if (isFinished(tab, n)=='X')
+        {
+            showBoard(tab, n);
+            cout<<"Wygrana X!\n\n\n";
+        }
+        if (isFinished(tab, n)=='O')
+        {
+            showBoard(tab, n);
+            cout<<"Wygrana O!\n\n\n";
+        }
+   }
+   while (true);
+}
