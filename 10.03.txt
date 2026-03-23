@@ -11,7 +11,7 @@ void showBoard(char **tab, size_t n)
         }
         if (i<n-1)
         {
-            cout<<endl<<"-----------------------------------"<<endl;
+            cout<<endl<<string(5*n,'-')<<endl;
         }
     }
     cout<<endl<<endl;
@@ -46,6 +46,7 @@ char isFinished(char **tab, size_t n)
         }
         licznik=0;
     }
+
     for (int i=0; i<n; i++) // pion X
     {
         for (int j=0; j<n; j++)
@@ -61,18 +62,32 @@ char isFinished(char **tab, size_t n)
         }
         licznik=0;
     }
-    for (int i=0; i<n-1; i++) //skos X
+
+    for (int i=0; i<n; i++) //skos X
     {
-        if (tab[i][i]==tab[i+1][i+1] and tab[i][i]=='X')
+        if (tab[i][i]=='X')
         {
             licznik+=1;
         }
-        if (licznik==n)
-        {
-            return 'X';
-        }
-        licznik=0;
     }
+    if (licznik==n)
+    {
+        return 'X';
+    }
+    licznik=0;
+
+    for (int i = 0; i<n; i++) // drugi skos X
+    {
+        if (tab[i][n-1-i]=='X')
+        {
+            licznik++;
+        }
+    }
+    if (licznik==n)
+    {
+        return 'X';
+    }
+    licznik=0;
 
     for (int i=0; i<n; i++) // poziom O
     {
@@ -89,6 +104,7 @@ char isFinished(char **tab, size_t n)
         }
         licznik=0;
     }
+
     for (int i=0; i<n; i++) // pion O
     {
         for (int j=0; j<n; j++)
@@ -102,20 +118,34 @@ char isFinished(char **tab, size_t n)
         {
             return 'O';
         }
-    licznik=0;
+        licznik=0;
     }
-    for (int i=0; i<n-1; i++) // skos O
+
+    for (int i=0; i<n; i++) // skos O
     {
-        if (tab[i][i]==tab[i+1][i+1] and tab[i][i]=='O')
+        if (tab[i][i]=='O')
         {
             licznik+=1;
         }
-        if (licznik==n)
-        {
-            return 'O';
-        }
-    licznik=0;
     }
+    if (licznik==n)
+    {
+        return 'O';
+    }
+    licznik=0;
+
+    for (int i = 0; i<n; i++) // drugi skos O
+    {
+        if (tab[i][n-1-i]=='O')
+        {
+            licznik++;
+        }
+    }
+    if (licznik==n)
+    {
+        return 'O';
+    }
+    
     return 'N';
 }
 
@@ -176,7 +206,7 @@ int main()
                 znak='X';
                 do
                 {
-                    cout<<"\n=== Tura  X ===\n";
+                    cout<<endl<<"--- Tura  X"<<endl;
                     showBoard(tab, n);
                     cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
                     cout<<"Podaj druga wspolrzedna: ";cin>>druga;
@@ -196,7 +226,7 @@ int main()
                 znak='O';
                 do
                 {
-                    cout<<"\n=== Tura  O ===\n";
+                    cout<<endl<<"--- Tura  O"<<endl;
                     showBoard(tab, n);
                     cout<<"Podaj pierwsza wspolrzedna: ";cin>>pierwsza;
                     cout<<"Podaj druga wspolrzedna: ";cin>>druga;
@@ -227,6 +257,13 @@ int main()
             showBoard(tab, n);
             cout<<"Wygrana O!\n\n\n";
         }
+    
+    for (int i = 0; i < n; i++)
+    {
+        delete[] tab[i];
+    }
+    delete[] tab;
+
    }
    while (true);
 }
