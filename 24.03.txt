@@ -1,0 +1,121 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+
+struct Product {
+    std::string name;
+    int price;
+    unsigned stock;
+};
+
+void saveFile(std::vector<Product> &p, const std::string &magazyn) {
+    std::ofstream file(magazyn);
+    for (size_t i=0; i<p.size(); i++) {
+        file<<p[i].name<<"\t"<<p[i].price<<"\t"<<p[i].stock<<"\n";
+    }
+    file.close();
+    std::cout<<"Zapisano do pliku.\n";
+}
+
+void loadFile(std::vector<Product> &p, const std::string &magazyn) {
+    std::ifstream file(magazyn);
+    
+}
+
+void wyswietl(std::vector<Product> &p) {
+    for (size_t i=0; i<p.size(); i++) {
+        std::cout << p[i].name << " " << p[i].price/100 << "zł " << p[i].price%100 << "gr " << "(" << p[i].stock << ")" << std::endl;
+    }
+}
+
+void addProduct(std::vector<Product> &p, const std::string name, int price, unsigned stock) {
+    p.push_back({name, price, stock});
+    std::cout<<"Pomyślnie dodano produkt do listy.\n";
+}
+
+void removeProduct(std::vector<Product> &p, const std::string name) {
+    for (size_t i=0; i<p.size(); i++) {
+        if (p[i].name==name) {
+            p.erase(p.begin() + i);
+            std::cout<<"Pomyślnie usunięto produkt z listy.\n";
+            return;
+        }
+    }
+    std::cout << "Brak produktu na liście!" << std::endl;
+}
+
+void changeStock(std::vector<Product> &p, const std::string name, unsigned new_stock) {
+    for (size_t i=0; i<p.size(); i++) {
+        if (p[i].name==name) {
+            if (new_stock>=0) {
+                p[i].stock=new_stock;
+                std::cout<<"Pomyślnie zmieniono ilość produktu.\n";
+                return;
+            }
+            else {
+                std::cout << "Ujemny stan produktu!" << std::endl;
+                return;
+            }
+        }
+    }
+    std::cout << "Brak produktu na liście!" << std::endl;
+
+}
+
+void searchProduct(std::vector<Product> &p, const std::string name) {
+    for (size_t i=0; i<p.size(); i++) {
+        if (p[i].name==name) {
+            std::cout << p[i].name << " " << p[i].price/100 << "zł " << p[i].price%100 << "gr " << "(" << p[i].stock << ")" << std::endl;
+            return;
+        }
+    }
+        std::cout << "Brak produktu na liście!" << std::endl;
+}
+
+int main() {
+    std::vector<Product> p;
+    const std::string magazyn = "magazyn.txt";
+
+
+    int wybor = 0;
+    std::string nazwa;
+    int cena = 0;
+    unsigned ilosc = 0;
+
+    do
+    {
+        std::cout<<"\n0 - Zakończ\n1 - Wyświetl produkty\n2 - Dodaj produkt\n3 - Usuń produkt\n4 - Zmień ilość produktu\n5 - Wyszukaj produkt\n";
+        std::cout<<"\nCo chcesz zrobić? ";std::cin>>wybor;std::cout<<std::endl;
+
+        if (wybor==0) {
+            std::cout<<"Dziękuję.\n";
+            break;
+        }
+        else if (wybor==1) {
+            wyswietl(p);
+        }
+        else if (wybor==2) {
+            std::cout<<"Podaj nazwę produktu: ";std::cin.ignore();getline(std::cin, nazwa);std::cout<<"\nPodaj cenę produktu: ";std::cin>>cena;std::cout<<"\nPodaj ilość produktu: ";std::cin>>ilosc;
+            addProduct(p, nazwa, cena, ilosc);
+        }
+        else if (wybor==3) {
+            std::cout<<"Podaj nazwę produktu: ";std::cin.ignore();getline(std::cin, nazwa);
+            removeProduct(p, nazwa);
+        }
+        else if (wybor==4) {
+            std::cout<<"Podaj nazwę produktu: ";std::cin.ignore();getline(std::cin, nazwa);std::cout<<"Podaj ilość produktu: ";std::cin>>ilosc;
+            changeStock(p, nazwa, ilosc);
+        }
+        else if(wybor==5) {
+            std::cout<<"Podaj nazwę produktu: ";std::cin.ignore();getline(std::cin, nazwa);
+            searchProduct(p, nazwa);
+        }
+        else {
+            std::cout<<"Nieznana operacja!\n";
+        }
+        saveFile(p, magazyn);
+    } while (true);
+
+    std::cout<<std::endl;
+}
