@@ -12,15 +12,28 @@ struct Product {
 void saveFile(std::vector<Product> &p, const std::string &magazyn) {
     std::ofstream file(magazyn);
     for (size_t i=0; i<p.size(); i++) {
-        file<<p[i].name<<"\t"<<p[i].price<<"\t"<<p[i].stock<<"\n";
+        file<<p[i].name<<";"<<p[i].price<<";"<<p[i].stock<<"\n";
     }
     file.close();
-    std::cout<<"Zapisano do pliku.\n";
 }
 
 void loadFile(std::vector<Product> &p, const std::string &magazyn) {
     std::ifstream file(magazyn);
-    
+    if (!file.is_open())
+    {
+        return;
+    }
+
+    std::string name, priceStr, stockStr;
+
+    while (getline(file, name, ';') && getline(file, priceStr, ';') && getline(file, stockStr))
+    {
+        Product prod;
+        prod.name = name;
+        prod.price = std::stoi(priceStr);
+        prod.stock = std::stoul(stockStr);
+        p.push_back(prod);
+    }
 }
 
 void wyswietl(std::vector<Product> &p) {
@@ -77,6 +90,7 @@ int main() {
     std::vector<Product> p;
     const std::string magazyn = "magazyn.txt";
 
+    loadFile(p, magazyn);
 
     int wybor = 0;
     std::string nazwa;
