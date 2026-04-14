@@ -1,0 +1,77 @@
+#include <string>
+#include <chrono>
+#include <iostream>
+#include <vector>
+#include <list>
+
+class TimeMeasurement
+{
+	std::string name;
+	std::chrono::time_point<std::chrono::high_resolution_clock> start;
+	
+public:
+	TimeMeasurement(std::string _name) : name(_name) {
+		start = std::chrono::high_resolution_clock::now();
+	}
+	
+	~TimeMeasurement() {
+		std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double> duration = end - start;
+		std::cout << name << ": " << duration.count() * 1000 << " msec" << std::endl;
+	}
+};
+
+/* Przykład użycia: */
+int main()
+{
+	/* Wydzielamy blok kodu */
+	{
+		TimeMeasurement t("Krótka pętla");
+		/* Tutaj wywołany zostanie automatycznie konstruktor TimeMeasurement */
+		for (int i = 0; i < 1000000; i++);
+		/* Tutaj wywołany zostanie automatycznie destruktor ~TimeMeasurement */
+	}
+
+	/* Wydzielamy drugi blok kodu */
+	{
+		TimeMeasurement t("Długa pętla");
+		/* Tutaj wywołany zostanie automatycznie konstruktor TimeMeasurement */
+		for (int i = 0; i < 200000000; i++);
+		/* Tutaj wywołany zostanie automatycznie destruktor ~TimeMeasurement */
+	}
+
+    std::vector<int> container1;
+    std::list<int> container2;
+    int sum1=0;
+    int sum2=0;
+
+    {
+        TimeMeasurement t("Dodawanie elementów do kontenerów (vector)");
+        for (int i = 0; i < 100000; i++) {
+            container1.insert(container1.begin(), 123456);
+        }
+    }
+
+    {
+        TimeMeasurement t("Dodawanie elementów do kontenerów (list)");
+        for (int i = 0; i < 100000; i++) {
+            container2.insert(container2.begin(), 123456);
+        }
+    }
+
+    {
+        TimeMeasurement t("Sumowanie elementów (vector)");
+        for (int i : container1) {
+            sum1+=i;
+        }
+    }
+
+    {
+        TimeMeasurement t("Sumowanie elementów (list)");
+        for (int i : container2) {
+            sum2+=i;
+        }
+    }
+
+	return 0;
+}
