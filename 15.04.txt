@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+struct Student {
+    int id;
+    std::string firstName;
+    std::string lastName;
+    float score;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Student, id, firstName, lastName, score)
+};
+
+std::vector<Student> students;
+
+
+void loadFile(const std::string& filename) {
+    std::ifstream file(filename);
+    json j;
+    file >> j;
+    students = j.get<std::vector<Student>>();
+}
+
+void saveFile(const std::string& filename) {
+    std::ofstream file(filename);
+    json j = students;
+    file << j.dump(4);
+}
+
+int main()
+{
+    const std::string filename = "students.json";
+
+    loadFile(filename);
+
+    std::cout<<"Ilość wczytanych studentow: "<<students.size()<<std::endl<<std::endl;
+
+    for (const auto& s : students) {
+        std::cout << s.id << " " << s.firstName << " " << s.lastName << " " << s.score << std::endl;
+    }
+
+    saveFile(filename);
+    return 0;
+}
