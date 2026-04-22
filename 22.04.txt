@@ -1,0 +1,112 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+struct Student {
+    int id;
+    std::string firstName;
+    std::string lastName;
+    float score;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Student, id, firstName, lastName, score)
+};
+
+std::vector<Student> students;
+
+void loadFile(const std::string& filename) {
+    std::ifstream file(filename);
+    json j;
+    file >> j;
+    students = j.get<std::vector<Student>>();
+}
+
+void saveFile(const std::string& filename) {
+    std::ofstream file(filename);
+    json j = students;
+    file << j.dump(4);
+}
+
+void printStudents(const std::vector<Student>& students) {
+    std::string grade = "";
+    for (const auto& s : students) {
+        if (s.score >= 90) {
+            grade = "5";
+        }
+        else if (s.score >= 80) {
+            grade = "4+";
+        }
+        else if (s.score >= 70) {
+            grade = "4";
+        }
+        else if (s.score >= 60) {
+            grade = "3+";
+        }
+        else if (s.score >= 50) {
+            grade = "3";
+        }
+        else {
+            grade ="2";
+        }
+
+        std::cout << s.id << " " << s.firstName << " " << s.lastName << " " << s.score << " " << grade << std::endl;
+    }
+}
+
+void averageScore(std::vector<Student>& students) {
+    
+}
+
+void countPassed(std::vector<Student>& students) {
+    int passed = std::count_if(students.begin(), students.end(), [](const Student& s) {
+        return s.score >= 50;
+    });
+    int failed = students.size() - passed;
+
+    std::cout << "Zdało: " << passed << std::endl;
+    std::cout << "Nie zdało: " << failed << std::endl;
+}
+
+void removeFailed(std::vector<Student>& students) {
+    students.erase(
+        std::remove_if(students.begin(), students.end(), [](const Student &s) {
+        return s.score < 50;
+        }), students.end());
+}
+
+
+
+struct Airplane {
+    std::string callsign;
+    std::string manufacturer;
+    std::string model;
+    unsigned int year;
+    unsigned int hourCount;
+};
+
+int main()
+{
+    std::vector<Airplane> va;
+    va.push_back({"ABC123", "JanuszX", "AirBusIks", 2021, 37});
+    va.push_back({"ABC123", "Zbigniew", "Trolololo", 1999, 666});
+    va.push_back({"ABC123", "Helena", "MamZawał", 2000, 1337});
+
+    for (const auto& a : va) {
+        std::cout << a.callsign << " " << a.manufacturer << " " << a.model << " " << a.year << " " << a.hourCount << std::endl;
+    }
+
+
+
+    const std::string filename = "students.json";
+    loadFile(filename);
+    std::cout<<"Ilość wczytanych studentow: "<<students.size()<<std::endl<<std::endl;
+
+
+    printStudents(students);
+    countPassed(students);
+    removeFailed(students);
+    averageScore(students);
+    saveFile(filename);
+    return 0;
+}
