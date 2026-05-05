@@ -1,0 +1,105 @@
+#include <iostream>
+#include <vector>
+
+class Canvas {
+public:
+    Canvas(size_t w, size_t h) : width(w), height(h), grid(h, std::vector<bool>(w, false)) {}
+    
+    void set(size_t x, size_t y) {
+        if (x < width && y < height)
+            grid[y][x] = true;
+    }
+
+    void print() const {
+        for (const auto& row : grid) {
+            for (bool c : row) {
+                std::cout << (c ? "\xE2\x96\x88" : " ");
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    size_t getWidth() const {
+        return width;
+    }
+
+    size_t getHeight() const {
+        return height;
+    }
+
+private:
+    std::vector<std::vector<bool>> grid;
+    size_t width, height;
+};
+
+class Painter {
+protected:
+    Canvas& canvas; /* Kompozycja */
+public:
+    Painter(Canvas& c) : canvas(c) {
+        // nothing to do here
+    }
+    virtual void paint() = 0;
+};
+
+class VerticalLinePainter : public Painter {
+public:
+    VerticalLinePainter(Canvas &c, size_t pos) : Painter(c) {
+        this->pos = pos;
+    }
+    void paint() {
+        for (size_t i=0; i<canvas.getHeight(); i++) {
+            canvas.set(pos,i);
+        }
+        // używamy zmiennej pos zeby zamalowac pola w Canvas
+        // na podstawie pozycji rysujemy pionowa kreske na Canvas
+    }
+
+private:
+    size_t pos;
+};
+
+class HorizontalLinePainter : public Painter {
+public:
+    HorizontalLinePainter(Canvas &c, size_t pos) : Painter(c) {
+        this->pos = pos;
+    }
+    void paint() {
+        for (size_t i=0; i<canvas.getWidth(); i++) {
+            canvas.set(i,pos);
+        }
+    }
+private:
+    size_t pos;
+};
+
+class RectanglePainter : public Painter {
+public:
+    RectanglePainter(Canvas &c) : Painter(c) {
+
+    }
+    void paint() {
+        for (size_t i=0; i<canvas.getHeight(); i++) {
+            canvas.set(0,i);
+            canvas.set(canvas.getWidth()-1, i);
+            for (size_t j=0; j<canvas.getWidth(); j++) {
+                canvas.set(j,0);
+                canvas.set(j, canvas.getHeight()-1);
+            }
+        }
+    }
+private:
+
+};
+
+int main() {
+    Canvas c(20, 15);
+    VerticalLinePainter vp(c, 4);
+    HorizontalLinePainter hp(c,4);
+    RectanglePainter rc(c);
+    vp.paint();
+    hp.paint();
+    rc.paint();
+    c.print();
+    return 0;
+}
